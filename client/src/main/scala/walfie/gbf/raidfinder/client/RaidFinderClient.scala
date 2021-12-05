@@ -54,6 +54,20 @@ class WebSocketRaidFinderClient(
   var isConnected: Var[Boolean] = Var(false)
   private var isStartingUp = true
 
+  var narmayaIsConnected: Boolean = false
+  val narmaya = new dom.WebSocket("ws://localhost:6969/raid")
+  narmaya.onopen = { (e: dom.Event) =>
+    narmayaIsConnected = true
+    println("hi " + narmayaIsConnected)
+  }
+  narmaya.onclose = { (e: dom.Event) =>
+    narmayaIsConnected = false
+    println("bye " + narmayaIsConnected)
+  }
+  narmaya.onerror = { (e: dom.Event) =>
+    println("error!!!")
+  }
+
   private var allBossesMap: Map[BossName, RaidBossColumn] = Map.empty
 
   // Load bosses from localStorage and refollow/resubscribe
@@ -225,6 +239,9 @@ class WebSocketRaidFinderClient(
   }
 
   private def addRaidTweetToColumn(tweet: RaidTweetResponse, column: RaidBossColumn): Unit = {
+    if (narmayaIsConnected) {
+      narmaya.send(tweet.raidId)
+    }
     val columnTweets = column.raidTweets.get
 
     val shouldInsertAtBeginning = columnTweets.headOption.forall { firstTweetInColumn =>

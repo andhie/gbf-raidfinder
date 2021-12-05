@@ -51,7 +51,7 @@ function getBaseUrl() {
   if (queryParams.baseUrl) return queryParams.baseUrl;
 
   var protocol = (l.protocol === 'https:') ? 'wss://' : 'ws://';
-  var remoteUrl = 'ws://gbf-raidfinder.aikats.us';
+  var remoteUrl = 'ws://gbf-raidfinder-tw.herokuapp.com';
   return isLocalFile ? remoteUrl : (protocol + l.host);
 };
 
